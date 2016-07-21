@@ -2,7 +2,7 @@
 curl -XGET fedora:9200/modularity/module/_search?pretty -d '
 {
    "size": 0,
-   "query": { 
+   "query": {
      "bool": {
        "must": [
          { "match": { "name.raw":     "cheese-pizza" }}
@@ -12,12 +12,12 @@ curl -XGET fedora:9200/modularity/module/_search?pretty -d '
    "aggs": {
      "versions": {
        "terms": {
-         "field":   "name.raw",      
-         "order": { "top_score": "desc" } 
+         "field":   "name.raw",
+         "order": { "top_score": "desc" }
        },
        "aggs": {
-         "top_score": { "max":      { "script":  "_score"           }}, 
-         "modules": { "top_hits": { "_source": "version" }}  
+         "top_score": { "max":      { "script":  "_score"           }},
+         "modules": { "top_hits": { "_source": "version" }}
        }
      }
    }
@@ -29,7 +29,7 @@ curl -XGET fedora:9200/modularity/module/_search?pretty -d '
 curl -XGET fedora:9200/modularity/module/_search?pretty -d '
 {
    "size": 0,
-   "query": { 
+   "query": {
      "bool": {
        "must": [
          { "match": { "name.raw":     "cheese-pizza" }}
@@ -53,18 +53,33 @@ curl -XGET fedora:9200/modularity/module/_search?pretty -d '
 }
 '
 
+# releases of name-version => the module documents, finally!
+
+curl -XGET fedora:9200/modularity/module/_search?pretty -d '
+{
+   "query": {
+     "bool": {
+       "must": [
+         { "match": { "name.raw":     "cheese-pizza" }},
+         { "match": { "version.raw":     "2.0" }}
+       ]
+     }
+   }
+}
+'
+
 curl -XGET fedora:9200/modularity/module/_search?pretty -d '
 {
    "size": 0,
    "aggs": {
      "modules": {
        "terms": {
-         "field":   "name.raw",      
-         "order": { "top_score": "desc" } 
+         "field":   "name.raw",
+         "order": { "top_score": "desc" }
        },
        "aggs": {
-         "top_score": { "max":      { "script":  "_score"           }}, 
-         "modules": { "top_hits": { "_source": "version" }}  
+         "top_score": { "max":      { "script":  "_score"           }},
+         "modules": { "top_hits": { "_source": "version" }}
        }
      }
    }
@@ -91,7 +106,7 @@ curl -XGET fedora:9200/modularity/module/_search?pretty -d '
 
 curl -XGET fedora:9200/modularity/module/_search?pretty -d '
 {
-   "query": { 
+   "query": {
      "bool": {
        "must": [
          { "match": { "name.raw":     "cheese-pizza" }}
@@ -105,7 +120,7 @@ curl -XGET fedora:9200/modularity/module/_search?pretty -d '
 
 curl -XGET fedora:9200/modularity/module/_search?pretty -d '
 {
-   "query": { 
+   "query": {
      "bool": {
        "must": [
          { "match": { "name":     "cheese-pizza" }}
