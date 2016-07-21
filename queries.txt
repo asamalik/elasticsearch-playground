@@ -1,0 +1,116 @@
+
+curl -XGET fedora:9200/modularity/module/_search?pretty -d '
+{
+   "size": 0,
+   "query": { 
+     "bool": {
+       "must": [
+         { "match": { "name.raw":     "cheese-pizza" }}
+       ]
+     }
+   },
+   "aggs": {
+     "versions": {
+       "terms": {
+         "field":   "name.raw",      
+         "order": { "top_score": "desc" } 
+       },
+       "aggs": {
+         "top_score": { "max":      { "script":  "_score"           }}, 
+         "modules": { "top_hits": { "_source": "version" }}  
+       }
+     }
+   }
+}
+'
+
+# list all versions of cheese-pizza module and number of their releases
+
+curl -XGET fedora:9200/modularity/module/_search?pretty -d '
+{
+   "size": 0,
+   "query": { 
+     "bool": {
+       "must": [
+         { "match": { "name.raw":     "cheese-pizza" }}
+       ]
+     }
+   },
+   "aggs": {
+     "versions": {
+       "terms": {
+         "field":   "name.raw"
+       },
+       "aggs": {
+          "releases": {
+            "terms": {
+                "field": "version.raw"
+            }
+          }
+       }
+     }
+   }
+}
+'
+
+curl -XGET fedora:9200/modularity/module/_search?pretty -d '
+{
+   "size": 0,
+   "aggs": {
+     "modules": {
+       "terms": {
+         "field":   "name.raw",      
+         "order": { "top_score": "desc" } 
+       },
+       "aggs": {
+         "top_score": { "max":      { "script":  "_score"           }}, 
+         "modules": { "top_hits": { "_source": "version" }}  
+       }
+     }
+   }
+}
+'
+
+
+# List all module names and number of their version-releases
+
+curl -XGET fedora:9200/modularity/module/_search?pretty -d '
+{
+   "size": 0,
+   "aggs": {
+     "modules": {
+       "terms": {
+         "field":   "name.raw"
+       }
+     }
+   }
+}
+'
+
+# List all modules named exactly cheese-pizza
+
+curl -XGET fedora:9200/modularity/module/_search?pretty -d '
+{
+   "query": { 
+     "bool": {
+       "must": [
+         { "match": { "name.raw":     "cheese-pizza" }}
+       ]
+     }
+   }
+}
+'
+
+# Search for modules with name similar to cheese-pizza
+
+curl -XGET fedora:9200/modularity/module/_search?pretty -d '
+{
+   "query": { 
+     "bool": {
+       "must": [
+         { "match": { "name":     "cheese-pizza" }}
+       ]
+     }
+   }
+}
+'
